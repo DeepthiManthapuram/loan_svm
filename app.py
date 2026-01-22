@@ -29,20 +29,42 @@ def load_or_train_models():
         svm_rbf = joblib.load("svm_rbf.pkl")
         scaler = joblib.load("scaler.pkl")
     else:
-        # Train models with sample data if files don't exist
+        # Train models with realistic loan data if files don't exist
         st.info("Training models from sample data... Please wait.")
         
-        # Create sample loan data
+        # Create realistic loan data with patterns
         np.random.seed(42)
         n_samples = 500
         
+        # Approval patterns: Good credit, high income, reasonable loan = Approved
+        # Rejection patterns: No credit, low income, high loan = Rejected
+        
+        approvals = {
+            'ApplicantIncome': np.concatenate([np.random.randint(8000, 15000, 200), np.random.randint(5000, 12000, 100)]).tolist(),
+            'LoanAmount': np.concatenate([np.random.randint(50, 250, 200), np.random.randint(100, 350, 100)]).tolist(),
+            'Credit_History': ['Yes'] * 300,
+            'Employment_Status': np.random.choice(['Salaried', 'Self-Employed'], 300).tolist(),
+            'Property_Area': np.random.choice(['Urban', 'Semiurban', 'Rural'], 300).tolist(),
+            'Loan_Status': [1] * 300
+        }
+        
+        rejections = {
+            'ApplicantIncome': np.concatenate([np.random.randint(1500, 4000, 150), np.random.randint(1000, 3500, 50)]).tolist(),
+            'LoanAmount': np.concatenate([np.random.randint(300, 500, 150), np.random.randint(350, 500, 50)]).tolist(),
+            'Credit_History': ['No'] * 200,
+            'Employment_Status': np.random.choice(['Salaried', 'Self-Employed'], 200).tolist(),
+            'Property_Area': np.random.choice(['Urban', 'Semiurban', 'Rural'], 200).tolist(),
+            'Loan_Status': [0] * 200
+        }
+        
+        # Combine both datasets
         data = {
-            'ApplicantIncome': np.random.randint(1500, 15000, n_samples),
-            'LoanAmount': np.random.randint(50, 500, n_samples),
-            'Credit_History': np.random.choice(['Yes', 'No'], n_samples),
-            'Employment_Status': np.random.choice(['Salaried', 'Self-Employed'], n_samples),
-            'Property_Area': np.random.choice(['Urban', 'Semiurban', 'Rural'], n_samples),
-            'Loan_Status': np.random.choice([0, 1], n_samples)
+            'ApplicantIncome': approvals['ApplicantIncome'] + rejections['ApplicantIncome'],
+            'LoanAmount': approvals['LoanAmount'] + rejections['LoanAmount'],
+            'Credit_History': approvals['Credit_History'] + rejections['Credit_History'],
+            'Employment_Status': approvals['Employment_Status'] + rejections['Employment_Status'],
+            'Property_Area': approvals['Property_Area'] + rejections['Property_Area'],
+            'Loan_Status': approvals['Loan_Status'] + rejections['Loan_Status']
         }
         
         df = pd.DataFrame(data)
