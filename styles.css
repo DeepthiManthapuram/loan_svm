@@ -1,0 +1,31 @@
+.title {
+    text-align: center;
+    color: #1F618D;
+    font-weight: bold;
+}
+
+.description {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+.approved {
+    background-color: #D5F5E3;
+    color: #1E8449;
+    padding: 20px;
+    font-size: 22px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.rejected {
+    background-color: #FADBD8;
+    color: #C0392B;
+    padding: 20px;
+    font-size: 22px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+}
